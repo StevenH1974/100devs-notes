@@ -1,0 +1,41 @@
+*{
+    box-sizing: border-box;
+}
+
+header, footer {
+    height: 225px;
+    border: 1px solid black;
+    clear: both;
+}
+
+.boxOne {
+    height: 600px;
+    width: 30%;
+    border: 1px solid black;
+    float: left;
+    clear: none;
+}
+
+.boxTwo {
+    height: 600px;
+    width: 35%;
+    border: 1px solid black;
+    float: left;    
+    clear: none;
+}
+
+.boxThree {
+    height: 600px;
+    width: 15%;
+    border: 1px solid black;
+    float: left;
+    clear: none;
+}
+
+.boxFour {
+    height: 600px;
+    width: 20%;
+    border: 1px solid black;
+    float: left;
+    clear: none;
+}
