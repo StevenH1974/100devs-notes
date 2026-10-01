@@ -125,3 +125,155 @@ Common caching windows:
 
 If a CSS file changes more frequently than its cache window, version the 
 filename (e.g. `styles-v2.css`) so the browser fetches the updated file.
+
+
+
+
+
+# Shay Howe Advanced HTML & CSS — Lesson 2: Detailed Positioning
+
+## Containing Floats
+
+When elements are floated inside a parent container, the parent essentially 
+forgets they are there and collapses to a height of 0. This is one of the most 
+common float problems. The content on the page respects the floated children, 
+but the parent container loses track of them entirely. You may not notice this 
+until the parent has a background color or border — then the collapse becomes 
+very obvious.
+
+There are three ways to deal with this:
+
+**1. Empty div with clear: both (not recommended)**
+Placing an empty `<div style="clear: both;"></div>` before the closing tag of 
+the parent works but it's not semantic — you're adding meaningless HTML just 
+to fix a CSS problem. This is the approach you used in the layout exercises, 
+and it's fine for learning, but not ideal in production.
+
+**2. The Overflow Technique**
+Adding `overflow: auto` to the parent element forces it to contain its floated 
+children and gives it a real height. Simple and clean, but has drawbacks — it 
+can clip box shadows and dropdown menus that extend outside the parent, and 
+different browsers handle it differently.
+
+```css
+.box-set {
+  overflow: auto;
+}
+```
+
+**3. The Clearfix Technique (preferred)**
+The clearfix uses CSS pseudo-elements `:before` and `:after` on the parent to 
+create hidden elements that contain the floats without adding extra HTML. 
+The `:after` pseudo-element does the actual clearing. This is the most widely 
+used and reliable method.
+
+```css
+.group:before,
+.group:after {
+  content: "";
+  display: table;
+}
+.group:after {
+  clear: both;
+}
+.group {
+  *zoom: 1;
+}
+```
+
+The convention is to name this reusable class `group` (coined by Dan Cederholm) 
+and apply it to any parent that needs to contain floats. Note: each element 
+only gets one `:before` and one `:after` pseudo-element, so if you're already 
+using them for something else, you'll need a different approach.
+
+---
+
+## The Position Property
+
+The `position` property gives you more precise control over element placement 
+than floats can provide. It accepts five values.
+
+### Static (default)
+Every element is `position: static` by default. Static elements follow normal 
+document flow and do not accept box offset properties (`top`, `right`, 
+`bottom`, `left`). Nothing special happening here — elements stack and flow 
+as expected.
+
+### Relative
+`position: relative` keeps the element in the normal document flow but allows 
+you to shift it from its original position using box offset properties. 
+Importantly, the space it originally occupied is preserved — surrounding 
+elements don't move to fill it. The element can overlap others without pushing 
+them around.
+
+```css
+.box {
+  position: relative;
+  top: 20px;   /* pushes DOWN 20px from original position */
+  left: 40px;  /* pushes RIGHT 40px from original position */
+}
+```
+
+If both `top` and `bottom` are set, `top` wins. If both `left` and `right` 
+are set, the direction of the page language wins (left for English).
+
+### Absolute
+`position: absolute` removes the element completely from normal document flow. 
+Other elements act as if it doesn't exist. The element positions itself 
+relative to its closest parent that has `position: relative` or 
+`position: absolute`. If no such parent exists, it positions relative to the 
+`<body>`.
+
+Box offset properties on absolutely positioned elements describe distance 
+from the edges of the parent, not from the element's original position.
+
+```css
+.parent {
+  position: relative;  /* establishes the positioning context */
+}
+.child {
+  position: absolute;
+  top: 50px;    /* 50px from top of parent */
+  right: 100px; /* 100px from right of parent */
+}
+```
+
+If an absolutely positioned element has no fixed height and both `top` and 
+`bottom` are set, it will stretch to fill that space. Same for `left`/`right` 
+and width.
+
+### Fixed
+`position: fixed` works like absolute but positions the element relative to 
+the browser viewport, not a parent element. It does not scroll with the page — 
+it stays in place as the user scrolls. This is how sticky headers and fixed 
+footers are built.
+
+```css
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+```
+
+Setting both `left: 0` and `right: 0` on a fixed element stretches it across 
+the full width of the viewport without disrupting the box model.
+
+---
+
+## The Z-Index Property
+
+Web pages exist on an x and y axis, but when elements overlap each other, 
+there is also a z-axis — think of it as depth, which element sits on top. 
+By default, elements later in the DOM stack on top of earlier ones.
+
+The `z-index` property lets you control that stacking order. A higher number 
+sits on top. `z-index` only works on elements that have a `position` value of 
+`relative`, `absolute`, or `fixed` — it has no effect on static elements.
+
+```css
+.box-2 { z-index: 3; }  /* on top */
+.box-3 { z-index: 2; }  /* middle */
+.box-4 { z-index: 1; }  /* bottom */
+```
