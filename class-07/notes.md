@@ -1037,3 +1037,341 @@ $('.error').fadeOut('slow', 'linear', function(event) {
 
 The callback pattern is important — it ensures the next action only happens
 after the animation is fully done.
+
+
+
+
+# Shay Howe Advanced HTML & CSS — Lesson 7: CSS Transforms
+
+The `transform` property lets you visually manipulate elements by rotating,
+scaling, moving, or skewing them. Transforms come in two flavors: 2D (x and y
+axes) and 3D (x, y, and z axes). Vendor prefixes should be used in production
+for the best browser support, with the un-prefixed version listed last.
+
+```css
+div {
+  -webkit-transform: scale(1.5);
+  -moz-transform: scale(1.5);
+  -o-transform: scale(1.5);
+  transform: scale(1.5);
+}
+```
+
+---
+
+## 2D Transforms
+
+### Rotate
+Rotates an element clockwise (positive) or counterclockwise (negative).
+Default rotation point is the center of the element.
+
+```css
+transform: rotate(20deg);   /* clockwise */
+transform: rotate(-55deg);  /* counterclockwise */
+```
+
+### Scale
+Changes the apparent size of an element. Default value is `1`. Values below
+`1` shrink the element, values above `1` grow it.
+
+```css
+transform: scale(.75);        /* shrink to 75% */
+transform: scale(1.25);       /* grow to 125% */
+transform: scaleX(.5);        /* scale only width */
+transform: scaleY(1.15);      /* scale only height */
+transform: scale(.5, 1.15);   /* different x and y values */
+```
+
+### Translate
+Moves an element from its default position without affecting document flow
+— similar in concept to relative positioning. Positive values push right
+and down, negative values pull left and up.
+
+```css
+transform: translateX(-10px);     /* move left */
+transform: translateY(25%);       /* move down */
+transform: translate(-10px, 25%); /* both axes */
+```
+
+### Skew
+Distorts an element along an axis. Uses degrees, not pixels.
+
+```css
+transform: skewX(5deg);         /* distort on horizontal axis */
+transform: skewY(-20deg);       /* distort on vertical axis */
+transform: skew(5deg, -20deg);  /* both axes */
+```
+
+---
+
+## Combining Transforms
+
+Multiple transforms can be listed on one `transform` property, space-separated.
+Never use multiple `transform` declarations — each one overwrites the last.
+
+```css
+/* Correct */
+transform: rotate(25deg) scale(.75);
+
+/* Wrong — only the second transform applies */
+transform: rotate(25deg);
+transform: scale(.75);
+```
+
+---
+
+## Transform Origin
+
+By default every transform happens from the center of the element (50% 50%).
+`transform-origin` changes that point. Uses the same syntax as background
+position — keywords, percentages, or pixel values.
+
+```css
+transform-origin: 0 0;          /* top left */
+transform-origin: 100% 100%;    /* bottom right */
+transform-origin: top left;     /* keyword */
+transform-origin: 20px 50px;    /* specific pixel values */
+```
+
+Use `transform-origin` carefully alongside `translate` — both affect
+positioning and can conflict.
+
+---
+
+## Perspective
+
+Perspective is required for 3D transforms to have any visual depth. Think of
+it as a vanishing point — the distance between the viewer and the element.
+
+**Two ways to set perspective:**
+1. As part of the `transform` property on an individual element:
+```css
+transform: perspective(200px) rotateX(45deg);
+```
+
+2. As a `perspective` property on the parent element (all children share
+the same vanishing point):
+```css
+.parent { perspective: 200px; }
+.child  { transform: rotateX(45deg); }
+```
+
+**Perspective depth:** A lower value (e.g. 100px) creates a dramatic, close-up
+3D effect. A higher value (e.g. 1000px) creates a subtle, distant 3D effect.
+
+`perspective-origin` sets the position of the vanishing point, using the
+same values as `transform-origin`.
+
+---
+
+## 3D Transforms
+
+### 3D Rotate
+Rotates on all three axes:
+```css
+transform: perspective(200px) rotateX(45deg); /* tilts top/bottom */
+transform: perspective(200px) rotateY(45deg); /* tilts left/right */
+transform: perspective(200px) rotateZ(45deg); /* spins on flat plane */
+```
+
+### 3D Translate
+Moves an element on the z axis — negative pushes further away (smaller),
+positive pulls closer (larger):
+```css
+transform: perspective(200px) translateZ(-50px); /* push back */
+transform: perspective(200px) translateZ(50px);  /* pull forward */
+```
+
+### 3D Scale
+Scales on the z axis using `scaleZ`. Only visually meaningful when combined
+with another 3D transform like `rotateX`.
+
+### Note on Skew
+Skew is the only 2D transform that cannot be applied on the z axis. There is
+no `skewZ`.
+
+---
+
+## Transform Style
+
+When a transformed parent contains transformed children, the children default
+to rendering flat (losing their 3D depth). To fix this, add
+`transform-style: preserve-3d` to the parent.
+
+```css
+.parent {
+  transform: perspective(200px) rotateY(45deg);
+  transform-style: preserve-3d;  /* lets children keep their 3D space */
+}
+```
+
+---
+
+## Backface Visibility
+
+When an element is rotated so its back faces the screen (e.g. rotateY(180deg)),
+it shows by default. Set `backface-visibility: hidden` to hide it when facing
+away — essential for card-flip animations.
+
+```css
+.card-back {
+  backface-visibility: hidden;
+  transform: rotateY(180deg);
+}
+```
+
+
+
+
+# Shay Howe Advanced HTML & CSS — Lesson 8: Transitions & Animations
+
+CSS3 gave us the ability to build interactions and animations entirely in CSS
+without needing JavaScript or Flash. The key difference between the two:
+transitions handle a change between two states, while animations can define
+multiple states across multiple keyframes.
+
+---
+
+## Transitions
+
+A transition fires when an element changes state — most commonly triggered
+by `:hover`, `:focus`, `:active`, or `:target` pseudo-classes. There are
+four transition properties:
+
+### transition-property
+Specifies which CSS property (or properties) will be animated. Use `all`
+to transition everything, or comma-separate specific properties.
+
+```css
+transition-property: background, border-radius;
+```
+
+**Important:** Not every CSS property can be transitioned — only properties
+that have a calculable midpoint. Colors, sizes, opacity, and positions work.
+The `display` property does not.
+
+### transition-duration
+How long the transition takes. Set in seconds (`s`) or milliseconds (`ms`).
+Multiple durations can be set for multiple properties, comma-separated, and
+they match up in order with the `transition-property` list.
+
+```css
+transition-duration: .2s, 1s;  /* background gets .2s, border-radius gets 1s */
+```
+
+### transition-timing-function
+Controls the speed curve of the transition:
+- `linear` — constant speed start to finish
+- `ease-in` — starts slow, speeds up
+- `ease-out` — starts fast, slows down
+- `ease-in-out` — slow start, fast middle, slow end
+
+```css
+transition-timing-function: ease-in-out;
+```
+
+### transition-delay
+Waits a set amount of time before starting the transition.
+
+```css
+transition-delay: 1s;
+```
+
+### Shorthand Transition
+The order is: property, duration, timing-function, delay. Comma-separate
+multiple transitions.
+
+```css
+transition: background .2s linear, border-radius 1s ease-in 1s;
+```
+
+---
+
+## Animations
+
+Animations are more powerful than transitions — they can have multiple
+keyframe states and run on their own without requiring a state change trigger.
+
+### @keyframes
+Define the animation's stages using percentages (or `from`/`to` for 0%/100%).
+
+```css
+@keyframes slide {
+  0%   { left: 0;     top: 0; }
+  50%  { left: 244px; top: 100px; }
+  100% { left: 488px; top: 0; }
+}
+```
+
+The `@keyframes` rule needs vendor prefixes in production
+(`@-webkit-keyframes`, `@-moz-keyframes`, `@-o-keyframes`).
+
+### Applying an Animation
+Attach the animation to an element using `animation-name`, then set a
+`animation-duration` — both are required for the animation to run.
+
+```css
+.ball {
+  animation-name: slide;
+  animation-duration: 2s;
+  animation-timing-function: ease-in-out;
+  animation-delay: .5s;
+}
+```
+
+### Animation Iteration Count
+How many times the animation runs. Use an integer or `infinite`.
+
+```css
+animation-iteration-count: infinite;
+```
+
+### Animation Direction
+Controls which direction the animation plays:
+- `normal` — plays forward (0% → 100%)
+- `reverse` — plays backward (100% → 0%)
+- `alternate` — plays forward then backward, back and forth
+- `alternate-reverse` — plays backward then forward
+
+```css
+animation-direction: alternate;
+```
+
+### Animation Play State
+Pauses or resumes an animation. Useful for pausing on click.
+
+```css
+animation-play-state: paused;  /* or running */
+```
+
+### Animation Fill Mode
+Controls styles before and after the animation runs:
+- `none` — no styles applied outside the animation (default)
+- `forwards` — holds the final keyframe styles after animation ends
+- `backwards` — applies the first keyframe styles immediately, even during delay
+- `both` — applies both forwards and backwards behaviors
+
+```css
+animation-fill-mode: forwards;
+```
+
+### Shorthand Animation
+Order: name, duration, timing-function, delay, iteration-count, direction,
+fill-mode, play-state.
+
+```css
+animation: slide 2s ease-in-out .5s infinite alternate;
+```
+
+---
+
+## Transitions vs. Animations — Key Difference
+
+Transitions require a trigger (a state change like `:hover`) and move between
+exactly two states. Animations use `@keyframes` to define multiple states,
+can run automatically without a trigger, can loop, and offer far more control
+over timing and direction.
+
+
+
+

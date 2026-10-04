@@ -424,4 +424,157 @@ speed for the entire duration.
 
 
 
+# Anki Flashcards — Shay Howe Advanced Lesson 7: CSS Transforms
+## Tags: CSS, transforms, 2D, 3D
+
+---
+
+Q: What are the four 2D transform values and what does each do?
+A: rotate() — spins an element clockwise (positive) or counterclockwise
+(negative) in degrees. scale() — changes the apparent size. translate() —
+moves the element without affecting document flow. skew() — distorts the
+element along an axis in degrees.
+
+---
+
+Q: How do you combine multiple transforms on one element?
+A: List them space-separated on a single transform property:
+transform: rotate(25deg) scale(.75); — Never use multiple separate transform
+declarations because each one overwrites the previous.
+
+---
+
+Q: What is the default transform-origin and how do you change it?
+A: The default is 50% 50% — the center of the element. Change it with the
+transform-origin property using keywords (top left), percentages (0% 100%),
+or pixel values (20px 50px).
+
+---
+
+Q: What is perspective in CSS transforms and what are the two ways to apply it?
+A: Perspective sets the depth/vanishing point required for 3D transforms to
+look three-dimensional. Apply it as perspective() inside the transform property
+on individual elements, or as the perspective property on a parent element so
+all children share the same vanishing point.
+
+---
+
+Q: What is the visual difference between a low and high perspective value?
+A: A low perspective value (e.g. 100px) makes the 3D effect dramatic and
+intense — like viewing an object up close. A high value (e.g. 1000px) makes
+the effect subtle — like viewing the same object from far away.
+
+---
+
+Q: What do rotateX, rotateY, and rotateZ do differently?
+A: rotateX tilts the element as if bending it horizontally (top and bottom
+tip toward or away from you). rotateY tilts it as if bending vertically (left
+and right sides tip). rotateZ spins it flat on the screen like a 2D rotation.
+
+---
+
+Q: What does translateZ do and how does it differ from scale?
+A: translateZ moves an element along the z axis — negative pushes it further
+away (appearing smaller), positive pulls it closer (appearing larger). Unlike
+scale, it is a true depth movement in 3D space, not just a size change.
+
+---
+
+Q: What is transform-style: preserve-3d and when do you need it?
+A: It is applied to a parent element to allow its transformed children to
+maintain their own 3D space. Without it, children of a transformed parent
+collapse flat into a 2D plane, losing their depth.
+
+---
+
+Q: What does backface-visibility: hidden do?
+A: It hides an element when it is rotated to face away from the screen —
+for example after a rotateY(180deg). Without it the element's back side
+is visible by default. Most commonly used in card-flip animations.
+
+---
+
+Q: Which 2D transform cannot be applied on the z axis in 3D transforms?
+A: Skew. There is no skewZ — elements can be skewed on the x and y axes
+only.
+
+
+
+
+# Anki Flashcards — Shay Howe Advanced Lesson 8: Transitions & Animations
+## Tags: CSS, transitions, animations, keyframes
+
+---
+
+Q: What are the four CSS transition properties?
+A: transition-property (what to animate), transition-duration (how long),
+transition-timing-function (speed curve), and transition-delay (wait before
+starting). The first three are most commonly used.
+
+---
+
+Q: What triggers a CSS transition?
+A: A state change on the element — most commonly the :hover, :focus, :active,
+or :target pseudo-classes. Without a state change, there is nothing to
+transition between.
+
+---
+
+Q: Why can't every CSS property be transitioned?
+A: Only properties that have a calculable midpoint can be transitioned. Colors,
+sizes, opacity, and position values have clear halfway points. The display
+property, for example, has no midpoint between block and none, so it cannot
+be transitioned.
+
+---
+
+Q: What are the four transition timing function keyword values and what does each do?
+A: linear — constant speed throughout. ease-in — starts slow, speeds up.
+ease-out — starts fast, slows down. ease-in-out — slow start, fast middle,
+slow end.
+
+---
+
+Q: What is the shorthand transition syntax and what order do the values go in?
+A: transition: property duration timing-function delay — for example:
+transition: background .2s linear 1s. Comma-separate multiple transitions.
+
+---
+
+Q: What is the key difference between a CSS transition and a CSS animation?
+A: Transitions move between two states and require a trigger like :hover.
+Animations use @keyframes to define multiple states, can run automatically
+without a trigger, can loop indefinitely, and offer more control over
+direction and timing.
+
+---
+
+Q: What does the @keyframes rule do and how do you write it?
+A: @keyframes defines the stages of an animation using percentage breakpoints.
+@keyframes slide { 0% { left: 0; } 100% { left: 100px; } } — you then
+apply it to an element with animation-name and animation-duration.
+
+---
+
+Q: What does animation-fill-mode: forwards do?
+A: It holds the styles from the final keyframe after the animation finishes,
+so the element stays in its end state rather than snapping back to its
+original styles.
+
+---
+
+Q: What does animation-direction: alternate do?
+A: It plays the animation forward (0% to 100%) then backward (100% to 0%),
+bouncing back and forth. Each back-and-forth counts as two iterations.
+
+---
+
+Q: What does animation-play-state do and what are its two values?
+A: It controls whether an animation is running or paused. The values are
+"running" (plays normally) and "paused" (freezes the animation at its
+current position, resuming from there when unpaused).
+
+
+
+
 
