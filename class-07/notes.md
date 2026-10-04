@@ -277,3 +277,222 @@ sits on top. `z-index` only works on elements that have a `position` value of
 .box-3 { z-index: 2; }  /* middle */
 .box-4 { z-index: 1; }  /* bottom */
 ```
+
+
+
+
+# Shay Howe Advanced HTML & CSS — Lesson 3: Complex Selectors
+
+Selectors are one of the most important parts of CSS. CSS3 introduced a whole
+new set of selectors that give developers much more precise control over what
+gets styled and when.
+
+---
+
+## Common Selectors (Review)
+
+The three foundational selectors you already know:
+- **Type selector** — targets elements by their HTML tag: `h1 {...}`
+- **Class selector** — targets by class attribute, reusable: `.tagline {...}`
+- **ID selector** — targets by ID attribute, unique per page: `#intro {...}`
+
+---
+
+## Child Selectors
+
+### Descendant Selector (space)
+Selects any matching element nested anywhere inside an ancestor, no matter
+how deep. Written with a space between the ancestor and target.
+
+```css
+article h2 { ... }  /* selects ALL h2 inside article, at any depth */
+```
+
+### Direct Child Selector (>)
+More specific — only selects elements that are immediate children of the
+parent, not deeply nested ones.
+
+```css
+article > p { ... }  /* only selects p directly inside article */
+```
+
+---
+
+## Sibling Selectors
+
+Siblings are elements that share the same parent.
+
+### General Sibling Selector (~)
+Selects all matching siblings that appear anywhere after the first element,
+as long as they share the same parent.
+
+```css
+h2 ~ p { ... }  /* selects any p that comes after an h2, same parent */
+```
+
+### Adjacent Sibling Selector (+)
+More strict — only selects the element that comes immediately after another,
+with no elements in between.
+
+```css
+h2 + p { ... }  /* only the p directly after an h2, same parent */
+```
+
+Note: you used `li + li::before` in the simple-site-lab to add pipe separators
+between nav items — that was the adjacent sibling selector in action.
+
+---
+
+## Attribute Selectors
+
+Attribute selectors let you target elements based on their HTML attributes
+and attribute values, not just their type or class.
+
+| Selector | What it does |
+|---|---|
+| `a[target]` | Element has the attribute present, any value |
+| `a[href="url"]` | Attribute value matches exactly |
+| `a[href*="login"]` | Attribute value contains the string |
+| `a[href^="https://"]` | Attribute value begins with the string |
+| `a[href$=".pdf"]` | Attribute value ends with the string |
+| `a[rel~="tag"]` | Attribute is space-separated, one word matches exactly |
+| `a[lang\|="en"]` | Attribute is hyphen-separated, begins with the word |
+
+A practical use: automatically adding icons to links based on file type.
+```css
+a[href$=".pdf"] { background-image: url("pdf-icon.png"); }
+a[href$=".mp3"] { background-image: url("audio-icon.png"); }
+```
+
+---
+
+## Pseudo-classes
+
+Pseudo-classes are not written in the HTML — they are dynamically applied
+based on user actions or document structure. They always start with a colon `:`.
+
+### Link Pseudo-classes
+```css
+a:link { ... }     /* unvisited link */
+a:visited { ... }  /* link user has already visited */
+```
+
+### User Action Pseudo-classes
+```css
+a:hover { ... }   /* cursor is over the element */
+a:active { ... }  /* element is being clicked */
+a:focus { ... }   /* element is focused (e.g. tabbed to via keyboard) */
+```
+
+### UI State Pseudo-classes (Form Elements)
+```css
+input:enabled { ... }       /* input available for use */
+input:disabled { ... }      /* input with disabled attribute */
+input:checked { ... }       /* checked checkbox or radio button */
+input:indeterminate { ... } /* neither checked nor unchecked */
+```
+
+### Structural & Position Pseudo-classes
+These select elements based on where they sit in the document tree.
+
+```css
+li:first-child { ... }     /* first child of its parent */
+li:last-child { ... }      /* last child of its parent */
+div:only-child { ... }     /* only child of its parent */
+
+p:first-of-type { ... }    /* first p within its parent */
+p:last-of-type { ... }     /* last p within its parent */
+img:only-of-type { ... }   /* only img within its parent */
+```
+
+### nth Pseudo-classes
+These accept a number or algebraic expression to select elements in patterns.
+
+```css
+li:nth-child(3)      /* selects the 3rd list item */
+li:nth-child(odd)    /* selects all odd items */
+li:nth-child(even)   /* selects all even items */
+li:nth-child(3n)     /* selects every 3rd item */
+li:nth-child(2n+3)   /* every 2nd item starting from the 3rd */
+li:nth-child(-n+4)   /* only the first 4 items */
+```
+
+The expression format is `an+b` where `a` is the interval and `b` is the
+starting point. `:nth-last-child` counts from the end of the list instead.
+
+`:nth-of-type(n)` works the same but only counts elements of the same type,
+skipping any sibling elements of different types.
+
+### Other Useful Pseudo-classes
+```css
+section:target { ... }       /* element whose ID matches the URL hash */
+div:empty { ... }            /* element with no children or text */
+div:not(.awesome) { ... }    /* any div WITHOUT the class "awesome" */
+```
+
+---
+
+## Pseudo-elements
+
+Pseudo-elements are similar to pseudo-classes but they target specific parts
+of an element rather than the element itself. In CSS3 they use double colons
+`::` to distinguish them from pseudo-classes, though single colon still works
+in most browsers (except `::selection`).
+
+Only one pseudo-element is allowed per selector at a time.
+
+### Textual Pseudo-elements
+```css
+p:first-letter { ... }  /* styles just the first letter */
+p:first-line { ... }    /* styles just the first line of text */
+```
+
+### Generated Content Pseudo-elements
+These create virtual elements before or after the selected element's content.
+Used constantly — you used `:after` in the clearfix technique.
+
+```css
+a:before { content: "→ "; }          /* inserts before the link text */
+a:after { content: " (" attr(href) ")"; }  /* appends the URL after */
+```
+
+The `content` property is required and can hold text, the value of an
+attribute using `attr()`, or be left as `""` for layout purposes like clearfix.
+
+### Fragment Pseudo-element
+```css
+::selection { background: orange; }  /* styles highlighted/selected text */
+```
+
+Only `color`, `background`, `background-color`, and `text-shadow` work here.
+Must use double colons.
+
+
+
+
+# Shay Howe Advanced HTML & CSS — Lesson 4: Responsive Web Design
+
+Responsive web design (RWD) is the practice of building websites that work
+on every device and screen size. The term was coined by Ethan Marcotte.
+RWD is built on three pillars: flexible layouts, media queries, and flexible media.
+
+**Responsive vs. Adaptive vs. Mobile:**
+- Responsive — fluidly changes based on viewport width continuously
+- Adaptive — built to a group of preset sizes/factors
+- Mobile — a completely separate website on a different domain for mobile users
+  (generally not a great approach)
+
+The industry standard is a combination of responsive and adaptive techniques.
+
+---
+
+## Flexible Layouts
+
+A flexible layout uses relative units (percentages or em) instead of fixed
+pixels so the layout scales proportionally with the viewport.
+
+**The formula for converting fixed to flexible:**
+
+
+
+

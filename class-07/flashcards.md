@@ -124,3 +124,148 @@ declared on the same element?
 A: The top property takes priority on elements with a fixed height. If no height 
 is set on an absolutely positioned element, the element stretches to fill the 
 space between both values.
+
+
+
+
+# Anki Flashcards — Shay Howe Advanced Lesson 3: Complex Selectors
+## Tags: CSS, selectors, pseudo-classes, pseudo-elements
+
+---
+
+Q: What is the difference between a descendant selector and a direct child selector?
+A: A descendant selector (space) targets an element nested anywhere inside an
+ancestor at any depth. A direct child selector (>) only targets elements that
+are immediate children of the parent, not deeper descendants.
+
+---
+
+Q: What is the difference between the general sibling selector and the adjacent sibling selector?
+A: The general sibling selector (~) selects all matching siblings that appear
+anywhere after the first element. The adjacent sibling selector (+) only selects
+the element that comes immediately after, with nothing in between.
+
+---
+
+Q: What does the attribute selector a[href$=".pdf"] select?
+A: It selects any anchor element whose href attribute value ends with ".pdf".
+The $ symbol means "ends with."
+
+---
+
+Q: Write the attribute selectors for: attribute is present, contains a value, and begins with a value.
+A: Present: a[target] — Contains: a[href*="login"] — Begins with: a[href^="https://"]
+
+---
+
+Q: What are the three user action pseudo-classes and when does each apply?
+A: :hover applies when the cursor is over the element. :active applies when the
+element is being clicked. :focus applies when the element is focused, such as
+when tabbed to via keyboard.
+
+---
+
+Q: What is the difference between :first-child and :first-of-type?
+A: :first-child selects an element only if it is the first child of its parent,
+regardless of type. :first-of-type selects the first element of that specific
+type within a parent, even if other element types come before it.
+
+---
+
+Q: What does the nth-child expression li:nth-child(-n+4) select?
+A: It selects only the first four list items in a list, leaving all others
+unselected. The negative n with a positive b value limits the selection to
+a maximum count from the beginning.
+
+---
+
+Q: What is the :not() pseudo-class and give an example?
+A: The negation pseudo-class selects elements that do NOT match the argument
+inside the parentheses. Example: div:not(.awesome) selects every div that
+does not have the class "awesome."
+
+---
+
+Q: What is the difference between pseudo-classes and pseudo-elements?
+A: Pseudo-classes (single colon) target elements based on state or position in
+the document tree. Pseudo-elements (double colon) target specific parts of an
+element's content, like the first letter or generated content before/after it.
+
+---
+
+Q: What is the ::selection pseudo-element and what properties can be used with it?
+A: ::selection styles text that the user has highlighted on the page. Only
+color, background, background-color, and text-shadow can be applied to it.
+It must always use double colons.
+
+
+
+
+# Anki Flashcards — Shay Howe Advanced Lesson 4: Responsive Web Design
+## Tags: CSS, responsive, media-queries, RWD
+
+---
+
+Q: What are the three main components of responsive web design?
+A: Flexible layouts (using relative units like percentages), media queries
+(applying different styles based on viewport conditions), and flexible media
+(scaling images and videos with the viewport).
+
+---
+
+Q: What is the formula for converting a fixed pixel width to a flexible percentage?
+A: target ÷ context = result. Divide the element's target width by its
+parent container's width to get the percentage value to use instead.
+
+---
+
+Q: What is the difference between responsive and mobile web design approaches?
+A: Responsive builds one fluid website that adapts to any screen size.
+Mobile builds a completely separate website on a different domain specifically
+for mobile users — generally not recommended due to the extra code base and
+maintenance overhead.
+
+---
+
+Q: What is the recommended way to include media queries and why?
+A: Use the @media rule inside your existing stylesheet. This avoids creating
+additional HTTP requests that a separate linked stylesheet would cause.
+
+---
+
+Q: What is the mobile first approach to media queries?
+A: Write default CSS for small screens first, then use min-width media queries
+to progressively add styles for larger viewports. This avoids making mobile
+users download unnecessary desktop styles that just get overwritten.
+
+---
+
+Q: Why should you NOT set media query breakpoints at common device widths like 320px or 768px?
+A: New devices with different resolutions are released constantly, making
+device-based breakpoints an endless moving target. Breakpoints should only
+be added when the layout actually starts to break or look wrong.
+
+---
+
+Q: What does the standard viewport meta tag do and what is its recommended value?
+A: It tells mobile browsers how to handle the page width so media queries
+work correctly. The standard value is: content="width=device-width, initial-scale=1"
+
+---
+
+Q: Why is setting user-scalable=no in the viewport meta tag a bad practice?
+A: It disables the user's ability to zoom, which harms accessibility and
+usability — particularly for users with visual impairments who rely on zooming.
+
+---
+
+Q: How do you make a standard image responsive?
+A: Set max-width: 100% on the image. This ensures it never exceeds its
+container width and scales down proportionally as the viewport shrinks.
+
+---
+
+Q: What technique is used to make embedded iframes like YouTube videos responsive?
+A: The aspect ratio padding trick. The parent element gets height: 0, width: 100%,
+and padding-bottom set to the aspect ratio percentage (56.25% for 16:9 video).
+The iframe is then absolutely positioned to fill that space completely.
