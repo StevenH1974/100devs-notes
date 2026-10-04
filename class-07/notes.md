@@ -493,6 +493,547 @@ pixels so the layout scales proportionally with the viewport.
 
 **The formula for converting fixed to flexible:**
 
+Divide the target element's width by its parent container's width to get
+the percentage to use.
+
+Example: a section that is 340px inside a 538px container:
+340 ÷ 538 = 63.197% — use that as the width instead of 340px.
+
+**Viewport-relative units (CSS3):**
+- `vw` — 1% of the viewport width
+- `vh` — 1% of the viewport height
+- `vmin` — 1% of the smaller of width or height
+- `vmax` — 1% of the larger of width or height
+
+Flexible layouts alone aren't always enough. When a viewport gets very small,
+even proportionally scaled columns can become too narrow to be usable. That's
+where media queries come in.
+
+---
+
+## Media Queries
+
+Media queries let you apply different CSS styles based on the characteristics
+of the browser or device — most commonly viewport width. They are the backbone
+of responsive web design.
+
+**Best practice:** write media queries using the `@media` rule inside your
+existing stylesheet to avoid extra HTTP requests.
+
+```css
+@media all and (max-width: 1024px) {
+  /* styles for viewports 1024px wide and smaller */
+}
+```
+
+### Logical Operators
+- `and` — both conditions must be true
+- `not` — negates the query
+- `only` — hides styles from browsers that don't support media queries
+- Comma-separated queries act as an **or** operator
+
+```css
+/* Between 800px and 1024px wide */
+@media all and (min-width: 800px) and (max-width: 1024px) { ... }
+
+/* Portrait orientation only */
+@media only screen and (orientation: portrait) { ... }
+```
+
+### Common Media Features
+- `min-width` / `max-width` — most commonly used for responsive layouts
+- `min-height` / `max-height`
+- `orientation: portrait` or `orientation: landscape`
+- `min-resolution` — targets devices by DPI (useful for print)
+- `device-pixel-ratio` — targets retina/high-DPI screens
+
+### Breakpoints
+**Do NOT** set breakpoints at specific device sizes like 320px, 768px, 1024px.
+Devices change constantly. Instead, add a breakpoint **only when the layout
+starts to break or look wrong.** Let the content decide when a breakpoint
+is needed.
+
+---
+
+## Mobile First
+
+Mobile first is a design strategy where you write your default CSS for small
+screens, then use media queries with `min-width` to progressively add styles
+for larger viewports.
+
+**Why mobile first:**
+- Mobile users don't have to download desktop styles only to have them
+  overwritten — saves bandwidth
+- Forces you to design with mobile constraints in mind from the start
+- The majority of internet usage is now on mobile devices
+
+```css
+/* Default mobile styles */
+section { width: 100%; }
+
+/* Add styles as viewport grows */
+@media screen and (min-width: 420px) {
+  section { float: left; width: 63%; }
+  aside  { float: right; width: 29%; }
+}
+```
+
+This is the opposite of the traditional desktop-first approach where you
+start wide and use `max-width` to scale down.
+
+---
+
+## Viewport Meta Tag
+
+Even with media queries in place, mobile browsers need to be told how to
+handle the page width. Apple invented the viewport meta tag for this.
+Without it, a mobile browser may zoom out to show the full desktop-width
+page, completely ignoring your media queries.
+
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1">
+```
+
+This is the standard recommended setting — it's the boilerplate you see
+in every HTML file. `width=device-width` tells the browser to match the
+viewport to the device width. `initial-scale=1` sets the default zoom to 1.
+
+**Other viewport properties:**
+- `minimum-scale` / `maximum-scale` — limits how far users can zoom
+- `user-scalable=no` — disables zooming entirely (bad practice — hurts
+  accessibility)
+- `target-densitydpi` — rare, controls pixel density
+
+---
+
+## Flexible Media
+
+Images, videos, and other media also need to scale with the viewport.
+The simplest fix is:
+
+```css
+img, video, canvas {
+  max-width: 100%;
+}
+```
+
+This ensures media never exceeds its container width and scales down naturally.
+
+### Flexible Embedded Media (iframes)
+`max-width: 100%` doesn't work on iframes. For embedded YouTube videos and
+similar third-party iframes, use the aspect ratio padding trick:
+
+```css
+figure {
+  height: 0;
+  padding-bottom: 56.25%; /* 16:9 ratio: 9 ÷ 16 = 0.5625 */
+  position: relative;
+  width: 100%;
+}
+iframe {
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+```
+
+The parent has `height: 0` and bottom padding set to the aspect ratio
+percentage. The iframe is then absolutely positioned to fill that space.
+This keeps the video perfectly proportioned at any viewport size.
 
 
 
+
+
+# Shay Howe Advanced HTML & CSS — Lesson 5: Preprocessors
+
+A preprocessor takes one type of data and converts it to another. In web
+development, Haml converts to HTML and Sass/SCSS converts to CSS. They exist
+to remove repetition, add logic, and make code more maintainable.
+
+---
+
+## Haml (HTML Abstraction Markup Language)
+
+Haml is an alternative way to write HTML that compiles down to standard HTML.
+It promotes cleaner, more readable markup by eliminating closing tags and
+enforcing structure through indentation.
+
+**Key Haml syntax rules:**
+- Elements start with `%` — `%h1`, `%section`, `%p`
+- Nesting is done through indentation — no closing tags needed
+- Classes use `.` directly after the element — `%section.feature`
+- IDs use `#` directly after the element — `%section#hello`
+- For divs specifically, you can omit `%div` and just use `.classname` or `#id`
+- Attributes go in `{}` (Ruby style) or `()` (HTML style)
+- Comments use `/` — block comments nest underneath it
+- Silent comments use `-#` and are completely removed from compiled output
+
+```haml
+%body
+  %header
+    %h1 Hello World
+  %section
+    %p Lorem ipsum dolor sit amet.
+```
+
+Compiles to standard HTML with opening and closing tags. Haml requires Ruby
+to compile and saves as `.haml` files.
+
+---
+
+## Sass & SCSS
+
+Sass (Syntactically Awesome Stylesheets) and SCSS (Sassy CSS) are CSS
+preprocessors that compile to standard CSS. SCSS is the more flexible of the
+two — it accepts plain CSS syntax. Sass is stricter, uses indentation instead
+of curly braces and semicolons, and is generally considered cleaner once learned.
+
+Both use `.sass` or `.scss` file extensions and require Ruby to compile.
+You can watch a file for changes with: `sass --watch styles.sass:styles.css`
+
+### Nesting
+Selectors can be nested inside each other, which compiles to descendant selectors.
+Don't go overboard — only nest when it makes logical sense.
+
+```sass
+.portfolio
+  border: 1px solid #9799a7
+  ul
+    list-style: none
+  li
+    float: left
+```
+Compiles to `.portfolio { }`, `.portfolio ul { }`, `.portfolio li { }`
+
+### Parent Selector (&)
+The `&` references the parent selector, most commonly used with pseudo-classes.
+
+```sass
+a
+  color: #0087cc
+  &:hover
+    color: #ff7b29
+```
+Compiles to `a { }` and `a:hover { }`
+
+### Variables
+Variables store reusable values — colors, fonts, sizes. Defined with `$`.
+
+```sass
+$font-base: 1em
+$serif: "Helvetica Neue", Arial, sans-serif
+
+p
+  font: $font-base $serif
+```
+
+### Calculations
+Sass can do math directly in stylesheets — addition, subtraction,
+multiplication, division. Also includes built-in functions:
+- `percentage()` — converts to percentage
+- `round()` — rounds to nearest whole number
+- `ceil()` — rounds up
+- `floor()` — rounds down
+- `abs()` — absolute value
+
+### Color Functions
+Sass has powerful color tools:
+- `rgba(#hexcolor, .5)` — converts hex to rgba with opacity
+- `lighten(color, %)` — makes a color lighter
+- `darken(color, %)` — makes a color darker
+- `saturate()` / `desaturate()` — adjusts color saturation
+- `fade-in()` / `fade-out()` — adjusts opacity
+- `mix(color1, color2)` — blends two colors
+- `complement()` — returns the complementary color
+- `grayscale()` — converts to grayscale
+
+### Extends (@extend)
+Extends let one selector inherit styles from another without duplicating code.
+
+```sass
+.alert
+  border-radius: 10px
+  padding: 10px 20px
+
+.alert-error
+  @extend .alert
+  background: #f2dede
+```
+
+A **placeholder selector** using `%` works the same way but never compiles
+to CSS on its own — it only exists to be extended. Keeps output clean.
+
+### Mixins (@mixin)
+Mixins are like reusable style templates that can accept arguments — think
+of them like functions for CSS. Called with `+mixin-name` in Sass or
+`@include mixin-name` in SCSS.
+
+```sass
+@mixin btn($color, $color-hover)
+  color: $color
+  &:hover
+    color: $color-hover
+
+.btn
+  +btn(#fff, #9799a7)
+```
+
+Mixins can have default argument values and even accept variable numbers
+of arguments using `...`.
+
+### Imports (@import)
+Sass can import multiple partial files and compile them into one single CSS
+file — reducing HTTP requests while keeping your code organized across
+multiple files.
+
+```sass
+@import "normalize"
+@import "grid", "typography"
+```
+
+Only one CSS file needs to be linked in HTML, even though the source is
+organized across many Sass files.
+
+### Loops & Conditionals
+Sass supports programming-style logic for building complex style systems:
+- `@if` / `@else if` / `@else` — conditional styles
+- `@for $i from 1 to 6` — loop a set number of times
+- `@each $item in list` — loop through a list of values
+- `@while condition` — loop until condition is false
+
+These are most useful when building mixins, grid systems, or generating
+repeated patterns of classes.
+
+---
+
+## Key Difference: Extends vs. Mixins
+- **Extends** share a fixed set of styles between selectors — no arguments,
+  groups selectors together in output
+- **Mixins** are templates that accept arguments and output styles per selector —
+  more flexible, more output
+
+
+
+
+
+  # Shay Howe Advanced HTML & CSS — Lesson 6: jQuery
+
+## JavaScript Basics
+
+HTML gives a page structure, CSS gives it appearance, and JavaScript gives it
+**behavior**. JavaScript is referenced in HTML using a `<script>` tag, ideally
+placed just before the closing `</body>` tag so the HTML loads first.
+
+```html
+<script src="script.js"></script>
+```
+
+**Key JavaScript concepts:**
+
+**Variables** — store values, defined with `var`, named in camelCase.
+Cannot start with a number or use hyphens.
+```js
+var theStarterLeague = 125;
+var foodTruck = 'Coffee';
+var isActive = true;
+```
+
+**Arrays** — ordered lists stored in square brackets `[]`. Items start at
+index `0`, so the third item is `[2]`.
+```js
+var vinyl = ['Miles Davis', 'Frank Sinatra', 'Ray Charles'];
+```
+
+**Objects** — collections of key/value pairs wrapped in curly braces `{}`.
+```js
+var school = {
+  name: 'The Starter League',
+  location: 'Merchandise Mart',
+  students: 120
+};
+```
+
+**Functions** — reusable blocks of code that can accept arguments.
+```js
+function sayHello(name) {
+  return('Hello ' + name);
+}
+```
+
+---
+
+## jQuery
+
+jQuery is an open source JavaScript library that makes selecting and
+manipulating HTML elements much easier. Its syntax mimics CSS selectors,
+making it approachable for anyone already familiar with CSS. Used on over
+63% of the top 10,000 websites.
+
+### Getting Started
+
+Load jQuery from a CDN before your own script file, both just before `</body>`:
+```html
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+<script src="script.js"></script>
+```
+
+The jQuery object is `$()` — everything in jQuery flows through it.
+
+### Document Ready
+
+Always wrap jQuery code in the document ready function to ensure the DOM
+is fully loaded before jQuery tries to act on it:
+```js
+$(document).ready(function(event) {
+  // all jQuery goes here
+});
+```
+
+---
+
+## Selectors
+
+jQuery selects elements using the same syntax as CSS — type, class, ID,
+attribute, pseudo-class selectors all work:
+```js
+$('.feature');             // class selector
+$('li strong');            // descendant selector
+$('a[target="_blank"]');   // attribute selector
+$('p:nth-child(2)');       // pseudo-class selector
+```
+
+The `this` keyword inside a jQuery function refers to the element that
+triggered the current event:
+```js
+$('div').click(function(event) {
+  $(this);  // refers to the clicked div
+});
+```
+
+---
+
+## Traversing
+
+Traversing lets you navigate the DOM from a starting selection — moving
+up, down, or sideways through the tree.
+
+```js
+$('div').not('.type, .collection');         // filter out certain divs
+$('div').not('.type, .collection').parent(); // chain methods together
+```
+
+Common traversal methods: `.find()`, `.children()`, `.parent()`,
+`.parents()`, `.siblings()`, `.next()`, `.prev()`, `.first()`, `.last()`,
+`.filter()`, `.not()`
+
+Methods can be **chained** by connecting them with dots.
+
+---
+
+## Manipulation
+
+Once elements are selected, jQuery can read or change their attributes,
+styles, content, and position in the DOM.
+
+### Getting vs. Setting
+The same method can get or set depending on how many arguments are passed:
+```js
+$('img').attr('alt');              // GET — returns the alt value
+$('img').attr('alt', 'Kangaroo'); // SET — changes the alt value
+```
+
+### Attribute Manipulation
+```js
+$('li:even').addClass('even-item');   // add a class
+$('p').removeClass();                  // remove all classes
+$('abbr').attr('title', 'Hello');      // set an attribute value
+```
+
+### Style Manipulation
+```js
+$('h1 span').css('font-size', 'normal');  // single property
+$('div').css({ fontSize: '13px', background: '#f60' }); // multiple
+$('header').height(200);                   // set height in px
+```
+
+Note: CSS property names in jQuery use camelCase — `font-size` becomes
+`fontSize`.
+
+### DOM Manipulation
+```js
+$('section').prepend('<h3>Featured</h3>');    // insert before content
+$('a[target="_blank"]').after('<em>New window.</em>'); // insert after element
+$('h1').text('Hello World');                   // replace text content
+```
+
+---
+
+## Events
+
+Events are actions that fire only when something specific happens — a click,
+a hover, a keypress. jQuery makes binding events to elements simple.
+
+```js
+$('li').on('click', function(event) {
+  $(this).addClass('saved-item');
+});
+```
+
+The `.on()` method is the preferred way to attach events (more flexible
+than shorthand methods like `.click()`). The first argument is the event
+name, the second is the function to run.
+
+**Common event types:** `click`, `hover`, `submit`, `keydown`, `keyup`,
+`focus`, `blur`, `change`, `scroll`, `resize`
+
+**Preventing default behavior** — stops a link from navigating or a form
+from submitting:
+```js
+event.preventDefault();
+```
+
+---
+
+## Effects
+
+jQuery has built-in animation effects for showing, hiding, fading, and
+sliding elements.
+
+### Basic Effects
+```js
+$('.error').show();       // show element
+$('.error').hide();       // hide element
+$('.error').toggle();     // toggle between show/hide
+```
+
+### Fading Effects
+```js
+$('.error').fadeIn('slow');
+$('.error').fadeOut(500);
+$('.error').fadeToggle();
+```
+
+### Sliding Effects
+```js
+$('.panel').slideDown('slow');
+$('.panel').slideUp();
+$('.panel').slideToggle();
+```
+
+### Effect Parameters
+Effects accept up to three optional parameters:
+1. **Duration** — keyword (`'slow'` = 600ms, `'fast'` = 200ms) or milliseconds
+2. **Easing** — `'swing'` (default, starts/ends slow) or `'linear'` (constant)
+3. **Callback** — a function that runs after the animation completes
+
+```js
+$('.error').fadeOut('slow', 'linear', function(event) {
+  $(this).remove();  // runs after the fade completes
+});
+```
+
+The callback pattern is important — it ensures the next action only happens
+after the animation is fully done.

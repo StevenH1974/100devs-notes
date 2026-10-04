@@ -269,3 +269,159 @@ Q: What technique is used to make embedded iframes like YouTube videos responsiv
 A: The aspect ratio padding trick. The parent element gets height: 0, width: 100%,
 and padding-bottom set to the aspect ratio percentage (56.25% for 16:9 video).
 The iframe is then absolutely positioned to fill that space completely.
+
+
+
+
+# Anki Flashcards — Shay Howe Advanced Lesson 5: Preprocessors
+## Tags: CSS, Sass, SCSS, preprocessors
+
+---
+
+Q: What is a preprocessor in the context of HTML and CSS?
+A: A program that converts one type of code into another. Haml converts to HTML
+and Sass/SCSS converts to CSS, adding features like variables, nesting, and
+logic that plain CSS doesn't support.
+
+---
+
+Q: What is the difference between Sass and SCSS?
+A: Both compile to CSS and share the same features. SCSS uses standard CSS
+syntax with curly braces and semicolons and accepts plain CSS. Sass uses strict
+indentation with no curly braces or semicolons — cleaner but less forgiving.
+
+---
+
+Q: How do you define and use a variable in Sass?
+A: Variables are defined with a dollar sign: $color-primary: #0087cc.
+They are then used anywhere in the stylesheet by referencing the variable
+name: color: $color-primary.
+
+---
+
+Q: What does the parent selector (&) do in Sass?
+A: It references the parent selector, allowing you to attach pseudo-classes or
+additional selectors without repeating the parent name. Example: a { &:hover
+{ color: red; } } compiles to a:hover { color: red; }
+
+---
+
+Q: What is the difference between @extend and a mixin in Sass?
+A: @extend makes one selector inherit styles from another with no arguments —
+it groups selectors together in the CSS output. A mixin is a reusable style
+template that accepts arguments, outputting styles separately for each selector
+that calls it. Extends share fixed styles; mixins are flexible templates.
+
+---
+
+Q: What is a placeholder selector in Sass and why use it?
+A: A placeholder selector starts with % and never compiles to CSS on its own.
+It is used purely to be extended by other selectors, keeping the compiled CSS
+output clean by not generating an unused base class.
+
+---
+
+Q: What does @import do in Sass and why is it useful?
+A: @import pulls in other Sass partial files and compiles everything into one
+single CSS file. This lets you organize your code across many files without
+creating multiple HTTP requests in the browser.
+
+---
+
+Q: Name three HSLa color functions available in Sass.
+A: lighten(color, %) makes a color lighter, darken(color, %) makes it darker,
+and fade-out(color, amount) reduces its opacity. Others include saturate(),
+desaturate(), and complement().
+
+---
+
+Q: What does the Sass @for loop do and what is the difference between "to" and "through"?
+A: @for outputs styles repeatedly based on a counter variable. "to" counts up
+to but not including the end number. "through" counts up to and including
+the end number.
+
+---
+
+Q: What is Haml and what is its main advantage over writing plain HTML?
+A: Haml is an HTML preprocessor that compiles to standard HTML. Its main
+advantage is eliminating closing tags and enforcing clean structure through
+indentation, making markup faster to write and easier to scan.
+
+
+
+
+# Anki Flashcards — Shay Howe Advanced Lesson 6: jQuery
+## Tags: JavaScript, jQuery, DOM
+
+---
+
+Q: What are the three roles of HTML, CSS, and JavaScript in a web page?
+A: HTML provides structure, CSS provides appearance, and JavaScript provides
+behavior and interactivity.
+
+---
+
+Q: Where should JavaScript and jQuery script tags be placed in HTML and why?
+A: Just before the closing </body> tag. This allows all HTML to parse first
+before the scripts execute, preventing errors from trying to interact with
+elements that haven't loaded yet.
+
+---
+
+Q: What is the jQuery document ready function and why is it important?
+A: $(document).ready(function() { }); — it wraps all jQuery code to ensure
+it doesn't run until the DOM has fully loaded. Without it, jQuery may try
+to select elements that don't exist yet.
+
+---
+
+Q: What is the jQuery $ object and how is it used?
+A: The $ is the jQuery object, used to select elements and return them for
+manipulation. You pass a CSS-style selector inside $() to target elements:
+$('.feature') selects all elements with the class "feature."
+
+---
+
+Q: What is the this keyword in a jQuery event handler?
+A: Inside a jQuery event function, $(this) refers to the specific element
+that triggered the event, allowing you to act on just that element rather
+than all matching elements.
+
+---
+
+Q: What is the difference between getting and setting in jQuery manipulation methods?
+A: Passing no value argument gets the current value: $('img').attr('alt')
+returns the alt text. Passing a value sets it: $('img').attr('alt', 'New
+text') changes the alt text. Same method, different number of arguments.
+
+---
+
+Q: What is the .on() method in jQuery and why is it preferred over shorthand event methods?
+A: .on() is the flexible event handler method. The first argument is the
+event name and the second is the handler function. It is preferred because
+it supports dynamic delegation for elements added to the page after load,
+unlike shorthand methods like .click().
+
+---
+
+Q: What does event.preventDefault() do in a jQuery event handler?
+A: It stops the browser's default behavior for that event — for example,
+preventing a link from navigating to a new page or a form from submitting.
+
+---
+
+Q: What are the three parameters that jQuery effect methods accept?
+A: Duration (a keyword like 'slow' or 'fast', or milliseconds), easing
+('swing' or 'linear'), and a callback function that runs after the effect
+completes. All three are optional.
+
+---
+
+Q: What is the difference between swing and linear easing in jQuery effects?
+A: Swing (the default) starts the animation slow, speeds up in the middle,
+then slows again at the end. Linear runs the animation at one constant
+speed for the entire duration.
+
+
+
+
