@@ -577,4 +577,136 @@ current position, resuming from there when unpaused).
 
 
 
+# Anki Flashcards — Shay Howe Advanced Lesson 9: Feature Support & Polyfills
+## Tags: HTML, CSS, browser-support, polyfills
 
+---
+
+Q: What is a polyfill in web development?
+A: A small JavaScript plugin that adds support for a feature not natively
+supported by a specific browser, allowing modern code to work in older
+environments.
+
+---
+
+Q: What is the HTML5 Shiv and what problem does it solve?
+A: The HTML5 Shiv is a JavaScript file that enables HTML5 semantic elements
+like header, section, and article to be recognized and styled in Internet
+Explorer 8 and below, where they would otherwise be treated as unknown
+inline elements.
+
+---
+
+Q: How should the HTML5 Shiv be loaded and why is that method used?
+A: Inside a conditional comment — <!--[if lt IE 9]>...<![endif]--> — so
+it only loads for browsers that actually need it, avoiding unnecessary
+overhead in modern browsers.
+
+---
+
+Q: What does Modernizr do and how does it communicate results to CSS?
+A: Modernizr detects whether a browser supports specific HTML5 and CSS3
+features. It adds classes to the html element — for example "cssgradients"
+if supported or "no-cssgradients" if not — which you then use to write
+conditional CSS for each scenario.
+
+---
+
+Q: What is the key advantage of using Modernizr's feature detection over
+simply writing CSS fallbacks?
+A: No styles are overwritten and no unnecessary HTTP requests are made.
+Each browser loads only what it needs — modern browsers get the CSS3 styles
+and older browsers get the fallback, cleanly and without duplication.
+
+---
+
+Q: What important limitation exists when using Modernizr to test media
+queries in JavaScript?
+A: The media query condition is only evaluated once when the page loads.
+If the user resizes the browser window, the condition is not re-tested
+unless additional JavaScript is written to handle that.
+
+---
+
+Q: Do websites need to look and perform identically in every browser?
+A: No. The acceptable level of cross-browser support is a decision based
+on actual traffic data. If a very small percentage of users use an older
+browser, full support for it may not be worth the development cost.
+
+
+
+
+# Anki Flashcards — Shay Howe Advanced Lesson 10: Semantics & Accessibility
+## Tags: HTML, accessibility, ARIA, semantics, microdata
+
+---
+
+Q: Why is the HTML hidden attribute preferred over display: none for hiding content?
+A: The hidden attribute semantically communicates that content should be
+temporarily ignored. display: none is a CSS presentation rule with no semantic
+meaning, and screen readers may handle it inconsistently.
+
+---
+
+Q: What is the semantic difference between strong and b?
+A: strong marks text of strong importance — warnings, critical content.
+b marks text that is stylistically offset without any added importance, like
+highlighting ingredient names in a recipe.
+
+---
+
+Q: What is the semantic difference between em and i?
+A: em places stressed emphasis that changes the meaning of the sentence.
+i marks text in an alternate voice or tone — technical terms, dialog, or
+titles — without adding emphasis or importance.
+
+---
+
+Q: What is the semantic difference between del and s?
+A: del marks text that has been deleted or removed from the document, and
+supports cite and datetime attributes. s marks text that is no longer accurate
+or relevant, like a crossed-out price.
+
+---
+
+Q: What are the three main microdata attributes and what does each do?
+A: itemscope — Boolean attribute that declares the boundary of the microdata
+item on a parent element. itemtype — identifies the vocabulary from schema.org
+to use. itemprop — marks individual properties within the item, with the
+element's content or a specific attribute providing the value.
+
+---
+
+Q: What is WAI-ARIA and what does it add to HTML?
+A: WAI-ARIA (Web Accessibility Initiative — Accessible Rich Internet
+Applications) is a W3C specification that adds roles, states, and properties
+to HTML elements, making their purpose and behavior understandable to assistive
+technologies like screen readers.
+
+---
+
+Q: What is the difference between document structure roles and landmark roles in WAI-ARIA?
+A: Document structure roles define the organizational structure of content on
+a page (heading, list, article, etc.). Landmark roles define the major regions
+of a page (banner, navigation, main, complementary, contentinfo) that users
+of assistive technologies can jump between directly.
+
+---
+
+Q: Which HTML elements do NOT have an implied WAI-ARIA role, and what roles should be manually applied?
+A: header and footer have no implied role. Apply role="banner" to the
+top-level header and role="contentinfo" to the top-level footer — but only
+once per page on the elements tied to the document itself.
+
+---
+
+Q: What does the download attribute on an anchor tag do?
+A: It tells the browser to prompt the user to download the linked file rather
+than open or navigate to it. It can be used as a Boolean or given a value
+that becomes the suggested filename.
+
+---
+
+Q: What does the rel attribute on a hyperlink describe?
+A: The relationship between the current document and the linked document.
+Common values include nofollow, license, author, bookmark, next, and prev.

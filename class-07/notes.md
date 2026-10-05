@@ -1375,3 +1375,284 @@ over timing and direction.
 
 
 
+# Shay Howe Advanced HTML & CSS — Lesson 9: Feature Support & Polyfills
+
+An important mindset shift this lesson opens with: websites do not need to
+look or perform identically in every browser. Decide what level of support
+is acceptable based on your actual traffic data, then work from there.
+
+---
+
+## What Are Shivs and Polyfills?
+
+Both are small JavaScript plugins that add support for features not natively
+supported by a specific browser. They bridge the gap between what a browser
+can do and what a developer wants to use.
+
+- **Shiv/Shim** — the terms are interchangeable, no real difference
+- **Polyfill** — fills in missing browser functionality so modern code works
+  in older environments
+
+---
+
+## HTML5 Shiv
+
+The HTML5 Shiv (created by Remy Sharp) allows HTML5 semantic elements like
+`<header>`, `<section>`, `<article>`, `<nav>`, etc. to be recognized and
+styled in Internet Explorer 8 and below. Without it, IE8 treats unknown
+HTML5 elements as inline elements and ignores CSS applied to them.
+
+It should be loaded inside a **conditional comment** so it only loads for
+the browsers that need it:
+
+```html
+<!--[if lt IE 9]>
+  <script src="html5shiv.js"></script>
+<![endif]-->
+```
+
+After loading the shiv, block-level HTML5 elements need to be explicitly
+declared as `display: block` in CSS:
+
+```css
+article, aside, details, figcaption, figure,
+footer, header, hgroup, nav, section, summary {
+  display: block;
+}
+```
+
+---
+
+## Modernizr — Feature Detection
+
+Modernizr is a JavaScript library that detects whether a browser supports
+specific HTML5 and CSS3 features. It adds classes to the `<html>` element
+indicating what is and isn't supported, which you can then target in CSS.
+
+For example if a browser supports CSS gradients, Modernizr adds:
+`class="cssgradients"` to `<html>`
+
+If it doesn't support them, Modernizr adds:
+`class="no-cssgradients"` to `<html>`
+
+You can then write CSS for both scenarios:
+
+```css
+/* Modern browsers with gradient support */
+.cssgradients button {
+  background: linear-gradient(#00a2f5, #0087cc);
+}
+
+/* Older browsers without gradient support */
+.no-cssgradients button {
+  background: url("button.png") 0 0 no-repeat;
+}
+```
+
+This approach means no styles are being overwritten and no unnecessary HTTP
+requests are made.
+
+Load Modernizr in the `<head>` of your document, after your stylesheets:
+```html
+<script src="modernizr.js"></script>
+```
+
+Modernizr can also include the HTML5 Shiv, eliminating the need for a
+separate shiv reference.
+
+---
+
+## Conditionally Loading Files with Modernizr + jQuery
+
+Modernizr can be used with jQuery to conditionally load JavaScript files
+based on feature support, saving bandwidth by only loading what's needed:
+
+```js
+$(document).ready(function() {
+  if (Modernizr.localstorage) {
+    jQuery.getScript('storage.js');        // feature supported
+  } else {
+    jQuery.getScript('storage-polyfill.js'); // load the polyfill
+  }
+});
+```
+
+You can also conditionally load files based on media queries:
+
+```js
+if (Modernizr.mq('screen and (min-width: 640px)')) {
+  jQuery.getScript('tabs.js');  // only load on wider screens
+}
+```
+
+**Important:** The media query condition is only checked once when the page
+loads — it does not re-check if the user resizes the browser.
+
+---
+
+## Cross Browser Testing
+
+The modern browsers (Chrome, Firefox, Safari) generally perform well.
+Internet Explorer is where most cross-browser issues live. Tools for
+testing include virtual machines running different IE versions, which
+Microsoft provides for free specifically for testing purposes.
+
+IE8 and above have built-in developer tools. IE7 and below do not —
+debugging requires tools like Firebug Lite.
+
+The general principle: test in the browsers your actual users are using,
+and make support decisions based on real traffic data rather than trying
+to support everything equally.
+
+
+
+
+# Shay Howe Advanced HTML & CSS — Lesson 10: Extending Semantics & Accessibility
+
+Semantics and accessibility are built into HTML by design, but they only
+deliver value when used intentionally. The core principle: use the right
+element for the right job, and be an advocate for that practice with your
+team and in your code.
+
+Semantics benefit everyone — they provide shared meaning, improve
+accessibility for assistive technologies, help search engines understand
+content, and support interoperability across platforms and devices.
+
+---
+
+## Hiding Content Semantically
+
+Using `display: none` hides content visually but is not semantically correct
+— screen readers may still pick it up or behave inconsistently. The better
+approach is the HTML `hidden` attribute, which semantically communicates
+that content should be ignored for the time being.
+
+```html
+<!-- Correct -->
+<div hidden>...</div>
+
+<!-- Not ideal -->
+<div style="display: none;">...</div>
+```
+
+---
+
+## Text Level Semantics
+
+### Bold Text
+- `<strong>` — text of **strong importance** (warnings, critical info)
+- `<b>` — **stylistically offset** text with no added importance (like
+  ingredient names in a recipe)
+
+### Italic Text
+- `<em>` — **stressed emphasis** that changes the meaning of a sentence
+- `<i>` — **alternate voice or tone**, like a technical term or dialog
+
+### Underline Text
+- `<ins>` — text **added to the document**, supports `cite` and `datetime`
+  attributes
+- `<u>` — **unarticulated annotation**, like a proper name in another language.
+  Use with caution — underlines are associated with links
+
+### Strikethrough Text
+- `<del>` — text **deleted from the document**, supports `cite` and `datetime`
+- `<s>` — text that is **no longer accurate or relevant** (e.g. old price)
+
+### Other Useful Text Elements
+- `<mark>` — **highlights text** for reference purposes (e.g. search results)
+- `<abbr title="...">` — marks up **abbreviations** with their full value in
+  the title attribute
+- `<sub>` / `<sup>` — subscript and superscript for typographical conventions
+- `<small>` — **side comments or small print** like copyright notices
+- `<code>` — inline **code fragments**, displays in monospace font
+- `<pre><code>` — **larger code blocks** preserving whitespace and formatting
+- `<br>` — line break within content (addresses, poems) — not for grouping
+- `<wbr>` — word break opportunity within a long word
+
+---
+
+## Microdata
+
+Microdata extends HTML with structured name-value pairs that machines,
+browsers, and search engines can read to provide richer information. Google
+uses microdata in search results to display business addresses, hours,
+ratings, and more.
+
+Microdata uses three main attributes:
+
+- `itemscope` — Boolean attribute that declares the scope of a microdata item,
+  placed on the parent element
+- `itemtype` — identifies which microdata vocabulary to use (from schema.org)
+- `itemprop` — marks individual properties within the item scope
+
+```html
+<section itemscope itemtype="http://schema.org/Person">
+  <h1 itemprop="name">Shay Howe</h1>
+  <div itemprop="jobTitle">Designer and Front-end Developer</div>
+  <a href="http://shayhowe.com" itemprop="url">shayhowe.com</a>
+</section>
+```
+
+Common microdata types from schema.org include Person, Organization, Event,
+and PostalAddress. Items can be nested — a Person can contain a PostalAddress
+inside it with its own `itemscope` and `itemtype`.
+
+---
+
+## WAI-ARIA
+
+WAI-ARIA (Web Accessibility Initiative — Accessible Rich Internet Applications)
+is a W3C specification that adds roles, states, and properties to HTML elements
+to make them more understandable to assistive technologies like screen readers.
+
+### Roles
+Applied using the `role` attribute, roles tell assistive technologies what
+a block of content does on the page.
+
+**Landmark roles** define major regions of a page:
+- `banner` — used on `<header>` (once per page)
+- `navigation` — used on `<nav>`
+- `main` — used on `<main>`
+- `complementary` — used on `<aside>`
+- `contentinfo` — used on `<footer>` (once per page)
+- `search` — used on a search form
+- `form` — used on a `<form>`
+
+```html
+<header role="banner">
+  <nav role="navigation">...</nav>
+</header>
+<article role="article">
+  <section role="region">...</section>
+</article>
+<aside role="complementary">...</aside>
+<footer role="contentinfo">...</footer>
+```
+
+Note: `<header>` and `<footer>` have no implied ARIA role — the `banner` and
+`contentinfo` roles should only be applied to the top-level header and footer
+directly tied to the document, not to headers/footers nested inside articles
+or sections.
+
+### States & Properties
+In addition to roles, WAI-ARIA includes states and properties that describe
+how content is configured — for example, whether a menu is expanded or
+collapsed, or whether a form field is required. These are especially important
+for dynamic content and interactive widgets.
+
+---
+
+## Hyperlink Attributes Worth Knowing
+
+- `download` — prompts the browser to download the file rather than open it.
+  Can be used as a Boolean or given a value to set the downloaded filename.
+```html
+  <a href="logo.png" download="Company-Logo">Download Logo</a>
+```
+
+- `rel` — describes the relationship between the current document and the
+  linked document. Common values include `nofollow`, `author`, `license`,
+  `next`, `prev`, `bookmark`, and `noopener`.
+```html
+  <a href="legal.html" rel="license">Terms of Use</a>
+```
